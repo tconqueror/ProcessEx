@@ -69,6 +69,7 @@ BEGIN_MESSAGE_MAP(CProcessExDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON1, &CProcessExDlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDOK, &CProcessExDlg::OnBnClickedOK)
 END_MESSAGE_MAP()
 
 
@@ -108,6 +109,7 @@ BOOL CProcessExDlg::OnInitDialog()
 	result.InsertColumn(0, L"ProcessName", LVCFMT_LEFT, 100);
 	result.InsertColumn(0, L"PID", LVCFMT_LEFT, 40);
 	
+	result.SetExtendedStyle(result.GetExtendedStyle() | LVS_EX_FULLROWSELECT);
 	//SET SYSTEM PRIVILEGE
 	HANDLE token;
 	if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, &token))
@@ -202,6 +204,7 @@ CString CProcessExDlg::intToCString(DWORD64 n)
 
 void CProcessExDlg::OnBnClickedButton1()
 {
+	result.DeleteAllItems();
 	HANDLE hProcessSnap;
 	PROCESSENTRY32 pe32;
 	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
@@ -286,4 +289,9 @@ void CProcessExDlg::OnBnClickedButton1()
 	CloseHandle(hProcessSnap);
 	//FreeLibrary(hntdll);
 	//gNtQueryInformationProcess = NULL;
+}
+
+void CProcessExDlg::OnBnClickedOK()
+{
+	OnBnClickedButton1();
 }
